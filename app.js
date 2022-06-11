@@ -29,9 +29,9 @@ app.post("/api/v1/get-image", catchAsync(async (req, res, next) => {
     const { value, error } = imageDataSchema.validate(req.body);
     if (error) return next(error);
     const URL = constructURL(value);
-    const fileName = await initBrowser(URL);
+    const fileName = await initBrowser(URL, value.fileType);
     if (!fileName) return next(new AppError("There was an error with the headless browser; try again later!", 456));
-    res.status(200).sendFile(`${process.cwd()}/tmp/${fileName}.png`);
+    res.status(200).sendFile(`${process.cwd()}/tmp/${fileName}.${value.fileType}`);
 }));
 
 app.all("*", (req, res, next) => {
