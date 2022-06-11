@@ -41,6 +41,13 @@ const imageDataSchema = JOI.object({
         .messages({
             "boolean.base": "'includeLineNumbers' should be a 'boolean'!",
         }),
+    fileType: JOI.string()
+        .trim()
+        .valid("jpeg", "jpg", "svg", "png")
+        .messages({
+            "string.base": "'fileType' should be of a type 'string'!",
+            "any.only": "'fileType' should be one of the following: jpeg, jpg, svg or png!"
+        }),
 });
 
 module.exports = imageDataSchema;
