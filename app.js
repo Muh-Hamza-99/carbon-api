@@ -1,8 +1,6 @@
 const express = require("express");
 const app = express();
 
-const redis = require("redis");
-
 const expressRateLimit = require("express-rate-limit");
 
 const AppError = require("./utilities/app-error");
@@ -15,9 +13,6 @@ const initBrowser = require("./helpers/init-browser");
 const deleteFiles = require("./helpers/delete-files");
 
 deleteFiles("tmp");
-
-const DB = process.env.REDIS_PORT || 6379;
-const client = redis.createClient(DB);
 
 const limiter = expressRateLimit({
     max: 100,
