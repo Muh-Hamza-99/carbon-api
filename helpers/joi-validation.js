@@ -43,10 +43,11 @@ const imageDataSchema = JOI.object({
         }),
     fileType: JOI.string()
         .trim()
-        .valid("jpeg", "jpg", "svg", "png")
+        .valid("jpeg", "jpg", "png")
+        .default("png")
         .messages({
             "string.base": "'fileType' should be of a type 'string'!",
-            "any.only": "'fileType' should be one of the following: jpeg, jpg, svg or png!"
+            "any.only": "'fileType' should be one of the following: jpeg, jpg or png!"
         }),
 });
 
