@@ -38,7 +38,7 @@ app.post("/api/v1/get-image", catchAsync(async (req, res, next) => {
         res.status(200).sendFile(`${process.cwd()}/tmp/${fileName}.${value.fileType}`);
         return;
     };
-    res.status(200).send({ status: "success", link: `${req.protocol}://${req.get("host")}/public/${fileName}.${value.fileType}` });
+    res.status(200).send({ status: "success", link: `${req.protocol}://${req.get("host")}/${fileName}.${value.fileType}` });
 }));
 
 app.all("*", (req, res, next) => {
