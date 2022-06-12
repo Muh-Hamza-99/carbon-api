@@ -9,7 +9,7 @@ const deleteFiles = directoryPath => {
                 if (fs.statSync(filePath).isFile()) fs.unlinkSync(filePath);
             };
         };
-    }, 600000);
+    }, 60000);
 };
 
 module.exports = deleteFiles;
