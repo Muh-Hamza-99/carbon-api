@@ -21,7 +21,7 @@ const limiter = expressRateLimit({
 });
 
 app.use(express.json({ limit: "20kb" }));
-app.use(express.static(__dirname + "/docs"));
+app.use(express.static(__dirname + "/public"));
 
 app.use("/api", limiter);
 
