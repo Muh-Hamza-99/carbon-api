@@ -6,6 +6,7 @@ const expressRateLimit = require("express-rate-limit");
 const AppError = require("./utilities/app-error");
 const catchAsync = require("./utilities/catch-async");
 const globalErrorHandler = require("./utilities/error-handler");
+const cloudinary = require("./utilities/cloudinary");
 
 const deleteFiles = require("./helpers/delete-files");
 
@@ -25,12 +26,12 @@ app.use(express.static(__dirname + "/public"));
 app.use("/api", limiter);
 
 app.post("/api/v1/get-image/file", catchAsync(async (req, res, next) => {
-    const { fileName, fileType } = await dataToImage(req.body, "tmp");
+    const { fileName, fileType } = await dataToImage(req.body);
     res.status(200).sendFile(`${process.cwd()}/tmp/${fileName}.${fileType}`);
 }));
 
 app.post("/api/v1/get-image/link", catchAsync(async (req, res, next) => {
-    const { fileName, fileType } = await dataToImage(req.body, "public")
+    const { fileName, fileType } = await dataToImage(req.body);
     res.status(200).send({ status: "success", link: `${req.protocol}://${req.get("host")}/${fileName}.${fileType}` });
 }));
 

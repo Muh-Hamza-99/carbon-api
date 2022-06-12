@@ -4,11 +4,11 @@ const initBrowser = require("./init-browser");
 
 const AppError = require("./../utilities/app-error");
 
-const dataToImage = async (bodyData, whichDirectory) => {
+const dataToImage = async (bodyData) => {
     const { value, error } = imageDataSchema.validate(bodyData);
     if (error) return next(error);
     const URL = constructURL(value);
-    const fileName = await initBrowser(URL, value.fileType, whichDirectory);
+    const fileName = await initBrowser(URL, value.fileType, "tmp");
     if (!fileName) return next(new AppError("There was an error with the headless browser; try again later!", 456));
     return { fileName, fileType: value.fileType };
 };
