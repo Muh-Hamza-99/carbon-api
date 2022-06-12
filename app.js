@@ -32,7 +32,8 @@ app.post("/api/v1/get-image/file", catchAsync(async (req, res, next) => {
 
 app.post("/api/v1/get-image/link", catchAsync(async (req, res, next) => {
     const { fileName, fileType } = await dataToImage(req.body);
-    res.status(200).send({ status: "success", link: `${req.protocol}://${req.get("host")}/${fileName}.${fileType}` });
+    const uploadResult = await cloudinary.uploader.upload(`./tmp/${fileName}.${fileType}`, { folder: "code-images" });
+    res.status(200).send({ status: "success", link: uploadResult.secure_url });
 }));
 
 app.all("*", (req, res, next) => {
