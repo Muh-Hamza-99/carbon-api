@@ -26,12 +26,19 @@ app.use(express.static(__dirname + "/docs"));
 app.use("/api", limiter);
 
 app.post("/api/v1/get-image", catchAsync(async (req, res, next) => {
+    const { method } = req.query;
+    if (!method || !(["file", "link"].includes(method))) return next(new AppError("Please specify a method to receive the image; as a link or image!"));
     const { value, error } = imageDataSchema.validate(req.body);
     if (error) return next(error);
     const URL = constructURL(value);
-    const fileName = await initBrowser(URL, value.fileType);
+    const whichDirectory = method === "file" ? "tmp" : "public"
+    const fileName = await initBrowser(URL, value.fileType, whichDirectory);
     if (!fileName) return next(new AppError("There was an error with the headless browser; try again later!", 456));
-    res.status(200).sendFile(`${process.cwd()}/tmp/${fileName}.${value.fileType}`);
+    if (whichDirectory === "file") {
+        res.status(200).sendFile(`${process.cwd()}/tmp/${fileName}.${value.fileType}`);
+        return;
+    };
+    res.status(200).send({ status: "success", link: `${req.protocol}://${req.get("host")}/public/${fileName}.${value.fileType}` });
 }));
 
 app.all("*", (req, res, next) => {
