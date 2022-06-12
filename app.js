@@ -7,10 +7,9 @@ const AppError = require("./utilities/app-error");
 const catchAsync = require("./utilities/catch-async");
 const globalErrorHandler = require("./utilities/error-handler");
 
-const imageDataSchema = require("./helpers/joi-validation");
-const constructURL = require("./helpers/construct-url");
-const initBrowser = require("./helpers/init-browser");
 const deleteFiles = require("./helpers/delete-files");
+
+const dataToImage = require("./helpers/data-to-image");
 
 deleteFiles("tmp");
 
@@ -26,21 +25,13 @@ app.use(express.static(__dirname + "/public"));
 app.use("/api", limiter);
 
 app.post("/api/v1/get-image/file", catchAsync(async (req, res, next) => {
-    const { value, error } = imageDataSchema.validate(req.body);
-    if (error) return next(error);
-    const URL = constructURL(value);
-    const fileName = await initBrowser(URL, value.fileType, "tmp");
-    if (!fileName) return next(new AppError("There was an error with the headless browser; try again later!", 456));
-    res.status(200).sendFile(`${process.cwd()}/tmp/${fileName}.${value.fileType}`);
+    const { fileName, fileType } = await dataToImage(req.body, "tmp");
+    res.status(200).sendFile(`${process.cwd()}/tmp/${fileName}.${fileType}`);
 }));
 
 app.post("/api/v1/get-image/link", catchAsync(async (req, res, next) => {
-    const { value, error } = imageDataSchema.validate(req.body);
-    if (error) return next(error);
-    const URL = constructURL(value);
-    const fileName = await initBrowser(URL, value.fileType, "public");
-    if (!fileName) return next(new AppError("There was an error with the headless browser; try again later!", 456));
-    res.status(200).send({ status: "success", link: `${req.protocol}://${req.get("host")}/${fileName}.${value.fileType}` });
+    const { fileName, fileType } = await dataToImage(req.body, "public")
+    res.status(200).send({ status: "success", link: `${req.protocol}://${req.get("host")}/${fileName}.${fileType}` });
 }));
 
 app.all("*", (req, res, next) => {
