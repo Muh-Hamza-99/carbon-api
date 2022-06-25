@@ -1,4 +1,4 @@
-# carbon-image-api
+# 🖼 carbon-image-api
 
 ## 📃 Description:
 An unofficial API for capturing beautiful screenshots of your source code from carbon.now.sh.
